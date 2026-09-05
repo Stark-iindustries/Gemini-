@@ -402,7 +402,7 @@ app.post('/api/chat', async (req, res) => {
         toolLog.push({ name, args, output: String(output).slice(0, 4000) });
         responseParts.push({ functionResponse: { name, response: { content: String(output) } } });
       }
-      history.push({ role: 'function', parts: responseParts });
+      history.push({ role: 'user', parts: responseParts });
 
       if (turn === MAX_TURNS - 1) {
         finalText += '\n\n[Stopped after reaching the max number of tool steps for one turn.]';
