@@ -1,0 +1,73 @@
+name: Auto Unzip on Push
+
+on:
+  push:
+    paths:
+      - '*.zip'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Find and extract ZIP files
+        shell: bash
+        run: |
+          set +e
+          
+          # Find all .zip files in the root
+          for zipfile in *.zip; do
+            if [ -f "$zipfile" ]; then
+              echo "Processing: $zipfile"
+              
+              # Create temp directory
+              mkdir -p .extract_temp
+              
+              # Extract to temp directory
+              unzip -q "$zipfile" -d .extract_temp
+              
+              # Check if there's a single parent directory
+              shopt -s dotglob nullglob
+              items=(.extract_temp/*)
+              
+              if [ ${#items[@]} -eq 1 ] && [ -d "${items[0]}" ]; then
+                # Single directory - extract its contents to root
+                echo "Removing parent directory wrapper..."
+                cp -r "${items[0]}"/* .
+                cp -r "${items[0]}"/.* . 2>/dev/null || true
+              else
+                # Multiple items or files - copy all to root
+                echo "Extracting files directly..."
+                cp -r .extract_temp/* .
+                cp -r .extract_temp/.* . 2>/dev/null || true
+              fi
+              
+              # Cleanup
+              rm -rf .extract_temp
+              rm -f "$zipfile"
+              echo "Extracted and removed: $zipfile"
+            fi
+          done
+          
+          # Remove node_modules, dist, build, coverage if they exist
+          rm -rf node_modules dist build coverage
+
+      - name: Commit changes
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          
+          # Only commit if there are changes
+          if ! git diff-index --quiet HEAD --; then
+            git add -A
+            git commit -m "ci: extract and unzip project files"
+            git push origin HEAD:main
+          else
+            echo "No changes to commit"
+          fi
