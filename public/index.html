@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Gemini Coding Agent</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <div id="backdrop" class="backdrop hidden"></div>
+
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-head">
+        <div class="brand">
+          <span class="dot"></span>
+          <h1>Gemini Agent</h1>
+        </div>
+        <button id="closeDrawer" class="icon-btn" aria-label="Close">✕</button>
+      </div>
+
+      <section class="panel">
+        <label for="apiKey">Gemini API key</label>
+        <input id="apiKey" type="password" placeholder="AIza..." autocomplete="off" />
+        <label for="model">Model</label>
+        <div class="model-row">
+          <select id="model" disabled>
+            <option value="">Enter API key to load models…</option>
+          </select>
+          <button id="refreshModels" type="button" class="icon-btn small-refresh" aria-label="Refresh models" title="Refresh models">⟳</button>
+        </div>
+        <p class="hint" id="modelHint">Your key's available models load automatically.</p>
+        <p class="hint">Your key is kept only in this browser tab and sent straight from your device to your server for each request. It is never written to disk.</p>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title">Workspace</div>
+        <div class="btn-row">
+          <button id="uploadBtn" class="btn">Upload zip</button>
+          <input id="zipInput" type="file" accept=".zip" hidden />
+          <button id="downloadBtn" class="btn">Download zip</button>
+        </div>
+        <div class="btn-row">
+          <button id="newSessionBtn" class="btn ghost">New session</button>
+        </div>
+        <div class="session-id" id="sessionLabel">no session yet</div>
+      </section>
+
+      <section class="panel grow">
+        <div class="panel-title">Files</div>
+        <div id="fileTree" class="file-tree">
+          <div class="empty">Empty workspace. Upload a zip or ask the agent to create files.</div>
+        </div>
+      </section>
+    </aside>
+
+    <main class="chat">
+      <div class="topbar">
+        <button id="openDrawer" class="icon-btn" aria-label="Menu">☰</button>
+        <div class="topbar-title">
+          <span>Gemini Agent</span>
+          <small id="topbarSub">no session yet</small>
+        </div>
+        <button id="terminalToggle" class="icon-btn terminal-toggle" aria-label="Terminal">⌨️</button>
+      </div>
+
+      <div id="terminalPanel" class="terminal-panel hidden">
+        <div class="terminal-header">
+          <span>Agent terminal (runs in your browser)</span>
+          <button id="terminalClose" class="btn ghost small">Close</button>
+        </div>
+        <pre id="terminalOutput"></pre>
+      </div>
+
+      <div id="messages" class="messages">
+        <div class="msg system">
+          Ask me to build, read, edit or refactor code in the workspace. I can extract/zip files and search the web, but I have no real terminal — everything happens through my file tools.
+        </div>
+      </div>
+
+      <div id="attachMenu" class="attach-menu hidden">
+        <button id="attachUpload" class="attach-item">📦 Upload zip</button>
+        <button id="attachDownload" class="attach-item">⬇️ Download zip</button>
+      </div>
+
+      <form id="composer" class="composer">
+        <button id="plusBtn" type="button" class="icon-btn plus" aria-label="Attach">+</button>
+        <textarea id="input" placeholder="Message the agent…" rows="1"></textarea>
+        <button id="sendBtn" type="submit" class="icon-btn send" aria-label="Send">➤</button>
+      </form>
+    </main>
+  </div>
+
+  <div id="fileModal" class="modal hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span id="fileModalPath"></span>
+        <button id="fileModalClose" class="btn ghost small">Close</button>
+      </div>
+      <pre id="fileModalContent"></pre>
+    </div>
+  </div>
+
+  <script type="module" src="webcontainer.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
