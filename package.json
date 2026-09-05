@@ -1,0 +1,19 @@
+{
+  "name": "gemini-cli-agent-webapp",
+  "version": "1.0.0",
+  "description": "A browser-based Gemini coding agent: extracts/creates zip files, reads & writes a virtual workspace, and can search the web via Gemini's Google Search grounding tool. No real terminal - the model works entirely through tool calls.",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.12",
+    "archiver": "^7.0.1",
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1",
+    "uuid": "^9.0.1"
+  }
+}
